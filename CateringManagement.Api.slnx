@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="../CateringManagement.Application/CateringManagement.Application.csproj" />
+  <Project Path="../CateringManagement.Domain/CateringManagement.Domain.csproj" />
+  <Project Path="../CateringManagement.Infrastructure/CateringManagement.Infrastructure.csproj" />
+  <Project Path="CateringManagement.Api.csproj" />
+</Solution>
