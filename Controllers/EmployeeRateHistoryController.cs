@@ -17,6 +17,14 @@ namespace CateringManagement.Api.Controllers
             _service = service;
         }
 
+
+        [HttpGet("all")]
+        public async Task<IActionResult> GetAll()
+        {
+            var result = await _service.GetAllPagedAsync();
+
+            return Ok(result);
+        }
         [HttpGet]
         public async Task<IActionResult> GetAll([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
         {
@@ -44,10 +52,10 @@ namespace CateringManagement.Api.Controllers
             return Ok(result);
         }
 
-        [HttpGet("employee/{employeeId}")]
-        public async Task<IActionResult> GetByEmployeeID(long employeeId)
+        [HttpGet("employee/{EmployeeRateHistoryId}")]
+        public async Task<IActionResult> GetByEmployeeID(long EmployeeRateHistoryId)
         {
-            var result = await _service.GetByEmployeeIdAsync(employeeId);
+            var result = await _service.GetByEmployeeIdAsync(EmployeeRateHistoryId);
 
             return Ok(result);
         }
@@ -59,6 +67,31 @@ namespace CateringManagement.Api.Controllers
             try
             {
                 var result = await _service.CreateAsync(dto);
+
+                return Ok(result);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new
+                {
+                    message = ex.Message
+                });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> update(long id, EmployeeRateDto dto)
+        {
+            try
+            {
+                var result = await _service.UpdateAsync(id, dto);
 
                 return Ok(result);
             }

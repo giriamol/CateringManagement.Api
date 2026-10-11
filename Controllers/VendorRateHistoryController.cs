@@ -16,9 +16,21 @@ namespace CateringManagement.Api.Controllers
             _service = service;
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetAll(
+            int pageNumber = 1,
+            int pageSize = 10)
+        {
+            var result =
+                await _service.GetAllAsync(
+                    pageNumber,
+                    pageSize
+                );
+
+            return Ok(result);
+        }
         [HttpGet("vendor/{vendorId}")]
-        public async Task<IActionResult> GetByVendor(
-            long vendorId)
+        public async Task<IActionResult> GetByVendor( long vendorId)
         {
             var result =
                 await _service.GetByVendorIdAsync(vendorId);
@@ -27,9 +39,7 @@ namespace CateringManagement.Api.Controllers
         }
 
         [HttpGet("vendor/{vendorId}/date/{date}")]
-        public async Task<IActionResult> GetRateForDate(
-            long vendorId,
-            DateTime date)
+        public async Task<IActionResult> GetRateForDate( long vendorId, DateTime date)
         {
             var result =  await _service.GetRateForDateAsync( vendorId,date);
 
@@ -46,13 +56,11 @@ namespace CateringManagement.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(
-            CreateVendorRateDto dto)
+        public async Task<IActionResult> Create( CreateVendorRateDto dto)
         {
             try
             {
-                var result =
-                    await _service.CreateAsync(dto);
+                var result =  await _service.CreateAsync(dto);
 
                 return Ok(result);
             }

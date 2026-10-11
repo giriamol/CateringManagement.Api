@@ -1,6 +1,7 @@
 ﻿using CateringManagement.Application.DTOs;
 using CateringManagement.Application.Interfaces;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CateringManagement.Api.Controllers
@@ -18,13 +19,22 @@ namespace CateringManagement.Api.Controllers
         }
 
         // GET: api/DailyHotelAssignment/date/2026-09-19
+        
         [HttpGet("date/{date}")]
         public async Task<IActionResult> GetByDate(DateTime date)
         {
             var result = await _service.GetByDateAsync(date);
-
             return Ok(result);
         }
+
+        // GET /api/DailyHotelAssignment/2026-10-09
+        [HttpGet("{date:datetime}")]
+        public async Task<IActionResult> GetVendorBy(DateTime date)
+        {
+            var result = await _service.GetVendorByDateAsync(date);
+            return Ok(result);
+        }
+
 
         // GET: api/DailyHotelAssignment/employee/1/date/2026-09-19
         [HttpGet("employee/{employeeId}/date/{date}")]
@@ -37,11 +47,44 @@ namespace CateringManagement.Api.Controllers
 
         // POST: api/DailyHotelAssignment
         [HttpPost]
-        public async Task<IActionResult> Create( CreateDailyHotelAssignmentDto dto)
+        public async Task<IActionResult> Create([FromBody] CreateDailyHotelAssignmentDto dto)
         {
             try
             {
                 var result = await _service.CreateAsync(dto);
+
+                return Ok(result);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new
+                {
+                    message = ex.Message
+                });
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new
+                {
+                    message = ex.Message
+                });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+        //vendor assignment
+        // POST: api/DailyVendorHotelAssignment
+        [HttpPost("vendor")]
+        public async Task<IActionResult> Create([FromBody] CreateDailyVendorHotelAssignmentDto dto)
+        {
+            try
+            {
+                var result = await _service.CreateVendorAsync(dto);
 
                 return Ok(result);
             }

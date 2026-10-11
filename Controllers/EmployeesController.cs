@@ -54,7 +54,12 @@ namespace CateringManagement.Api.Controllers
             {
                 var employee = await _employeeService.CreateAsync(dto);
 
-                return CreatedAtAction( nameof(GetById), new { id = employee.EmployeeId }, employee);
+                // return CreatedAtAction( nameof(GetById), new { id = employee.EmployeeId }, employee);
+                return Ok(new
+                {
+                    message = "Employee created successfully.",
+                    data = employee
+                });
             }
             catch (ArgumentException ex)
             {
@@ -68,6 +73,14 @@ namespace CateringManagement.Api.Controllers
                 return Conflict(new
                 {
                     message = ex.Message
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    message = ex.Message,
+                    innerException = ex.InnerException?.Message
                 });
             }
         }

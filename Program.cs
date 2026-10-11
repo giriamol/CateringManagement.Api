@@ -33,13 +33,16 @@ builder.Services.AddScoped<IEmployeeRateHistoryService,EmployeeRateHistoryServic
 builder.Services.AddScoped<IVendorRateHistoryRepository,VendorRateHistoryRepository>();
 builder.Services.AddScoped< IVendorRateHistoryService, VendorRateHistoryService>();
 
-builder.Services.AddScoped<IRateMastersRepository, RateMastersRepository>();
-builder.Services.AddScoped<IRateMastersService, RateMastersService>();
+//builder.Services.AddScoped<IRateMastersRepository, RateMastersRepository>();
+//builder.Services.AddScoped<IRateMastersService, RateMastersService>();
 
 builder.Services.AddScoped<IShiftRepository, ShiftRepository>();
 
 builder.Services.AddScoped<IDailyHotelAssignmentService, DailyHotelAssignmentService>();
 builder.Services.AddScoped<IDailyHotelAssignmentRepository, DailyHotelAssignmentRepository>();
+
+builder.Services.AddScoped<IHotelRateHistoryService,HotelRateHistoryService>();
+builder.Services.AddScoped<IHotelRateHistoryRepository, HotelRateHistoryRepository>();
 
 builder.Services.AddScoped< IDailyEmployeePaymentRepository, DailyEmployeePaymentRepository>();
 builder.Services.AddScoped<
@@ -66,6 +69,28 @@ builder.Services.AddScoped<
 builder.Services.AddScoped<
     IHotelCollectionService,
     HotelCollectionService>();
+builder.Services.AddScoped<
+    IEmployeeAdvanceRepository,
+    EmployeeAdvanceRepository>();
+
+builder.Services.AddScoped<
+    IEmployeeAdvanceService,
+    EmployeeAdvanceService>();
+builder.Services.AddScoped<IHotelBillingService, HotelBillingService>();
+// Register repository
+builder.Services.AddScoped<
+    IEmployeePaymentRepository,
+    EmployeePaymentRepository>();
+
+// Register service
+builder.Services.AddScoped<
+    IEmployeePaymentService,
+    EmployeePaymentService>();
+
+// Repository — add this registration
+builder.Services.AddScoped<
+    IRateMastersRepository,
+    RateMastersRepository>();
 
 builder.Services.AddOpenApi();
 builder.Services.AddCors(options =>
