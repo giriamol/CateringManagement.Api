@@ -29,11 +29,12 @@ namespace CateringManagement.Api.Controllers
 
             return Ok(result);
         }
-        [HttpGet("vendor/{vendorId}")]
-        public async Task<IActionResult> GetByVendor( long vendorId)
+
+        [HttpGet("vendor/{VendorRateHistoryId}")]
+        public async Task<IActionResult> GetByVendor( long VendorRateHistoryId)
         {
             var result =
-                await _service.GetByVendorIdAsync(vendorId);
+                await _service.GetByVendorIdAsync(VendorRateHistoryId);
 
             return Ok(result);
         }
@@ -74,6 +75,66 @@ namespace CateringManagement.Api.Controllers
             catch (InvalidOperationException ex)
             {
                 return Conflict(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+        [HttpPut("{vendorRateHistoryId:long}")]
+        public async Task<IActionResult> Update( long vendorRateHistoryId, [FromBody] UpdateVendorRateDto dto)
+        {
+            try
+            {
+                var updated = await _service.UpdateAsync(
+                    vendorRateHistoryId, dto);
+
+                if (!updated)
+                {
+                    return NotFound(new
+                    {
+                        message = "Vendor rate history record not found."
+                    });
+                }
+
+                return Ok(new
+                {
+                    message = "Vendor rate updated successfully."
+                });
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpDelete("{vendorRateHistoryId:long}")]
+        public async Task<IActionResult> Delete(
+            long vendorRateHistoryId)
+        {
+            try
+            {
+                var deleted = await _service.DeleteAsync(
+                    vendorRateHistoryId);
+
+                if (!deleted)
+                {
+                    return NotFound(new
+                    {
+                        message = "Vendor rate history record not found."
+                    });
+                }
+
+                return Ok(new
+                {
+                    message = "Vendor rate deleted successfully."
+                });
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new
                 {
                     message = ex.Message
                 });

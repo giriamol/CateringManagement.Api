@@ -9,101 +9,108 @@ namespace CateringManagement.Api.Controllers
     [ApiController]
     public class HotelsController : ControllerBase
     {
-    private readonly IHotelService _hotelService;
+        private readonly IHotelService _hotelService;
 
-    public HotelsController(IHotelService hotelService)
-    {
-        _hotelService = hotelService;
-    }
-
-    [HttpGet]
-    public async Task<IActionResult> GetAll()
-    {
-        var hotels = await _hotelService.GetAllAsync();
-
-        return Ok(hotels);
-    }
-
-    [HttpGet("{id:long}")]
-    public async Task<IActionResult> GetById(long id)
-    {
-        var hotel =
-            await _hotelService.GetByIdAsync(id);
-
-        if (hotel == null)
+        public HotelsController(IHotelService hotelService)
         {
-            return NotFound(new
-            {
-                message = "Hotel not found."
-            });
+            _hotelService = hotelService;
         }
 
-        return Ok(hotel);
-    }
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            var hotels = await _hotelService.GetAllAsync();
 
-    [HttpPost]
-    public async Task<IActionResult> Create(
-        [FromBody] CreateHotelDto dto)
-    {
-        try
+            return Ok(hotels);
+        }
+
+        [HttpGet("{id:long}")]
+        public async Task<IActionResult> GetById(long id)
         {
             var hotel =
-                await _hotelService.CreateAsync(dto);
+                await _hotelService.GetByIdAsync(id);
 
-            return CreatedAtAction(
-                nameof(GetById),
-                new { id = hotel.HotelId },
-                hotel);
-        }
-        catch (InvalidOperationException ex)
-        {
-            return Conflict(new
+            if (hotel == null)
             {
-                message = ex.Message
+                return NotFound(new
+                {
+                    message = "Hotel not found."
+                });
+            }
+
+            return Ok(hotel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create(
+            [FromBody] CreateHotelDto dto)
+        {
+            try
+            {
+                var hotel =
+                    await _hotelService.CreateAsync(dto);
+
+                return CreatedAtAction(
+                    nameof(GetById),
+                    new { id = hotel.HotelId },
+                    hotel);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(new
+                {
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpPut("{id:long}")]
+        public async Task<IActionResult> Update(long id, [FromBody] UpdateHotelDto dto)
+        {
+            var updated =
+                await _hotelService.UpdateAsync(id, dto);
+
+            if (!updated)
+            {
+                return NotFound(new
+                {
+                    message = "Hotel not found."
+                });
+            }
+
+            return Ok(new
+            {
+                message = "Hotel updated successfully."
             });
         }
-    }
 
-    [HttpPut("{id:long}")]
-    public async Task<IActionResult> Update(
-        long id,
-        [FromBody] UpdateHotelDto dto)
-    {
-        var updated =
-            await _hotelService.UpdateAsync(id, dto);
-
-        if (!updated)
+        [HttpDelete("{id:long}")]
+        public async Task<IActionResult> Delete(long id)
         {
-            return NotFound(new
+            var deleted =
+                await _hotelService.DeleteAsync(id);
+
+            if (!deleted)
             {
-                message = "Hotel not found."
+                return NotFound(new
+                {
+                    message = "Hotel not found."
+                });
+            }
+
+            return Ok(new
+            {
+                message = "Hotel deleted successfully."
             });
         }
-
-        return Ok(new
+        // GET: api/Hotels/without-rate-history
+        [HttpGet("without-rate-history")]
+        public async Task<IActionResult> GetHotelsWithoutRateHistory()
         {
-            message = "Hotel updated successfully."
-        });
-    }
+            var hotels =
+                await _hotelService.GetHotelsWithoutRateHistoryAsync();
 
-    [HttpDelete("{id:long}")]
-    public async Task<IActionResult> Delete(long id)
-    {
-        var deleted =
-            await _hotelService.DeleteAsync(id);
-
-        if (!deleted)
-        {
-            return NotFound(new
-            {
-                message = "Hotel not found."
-            });
+            return Ok(hotels);
         }
-
-        return Ok(new
-        {
-            message = "Hotel deleted successfully."
-        });
     }
-}
 }

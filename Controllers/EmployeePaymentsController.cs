@@ -12,8 +12,7 @@ namespace CateringManagement.Api.Controllers
     {
         private readonly IEmployeePaymentService _service;
 
-        public EmployeePaymentsController(
-            IEmployeePaymentService service)
+        public EmployeePaymentsController( IEmployeePaymentService service)
         {
             _service = service;
         }

@@ -134,5 +134,15 @@ namespace CateringManagement.Api.Controllers
                 message = "Employee deleted successfully."
             });
         }
+
+        // GET: api/Employees/without-rate-history
+        [HttpGet("without-rate-history")]
+        public async Task<IActionResult> GetEmployeesWithoutRateHistory()
+        {
+            var employees =
+                await _employeeService.GetEmployeesWithoutRateHistoryAsync();
+
+            return Ok(employees);
+        }
     }
 }

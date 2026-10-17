@@ -12,8 +12,7 @@ namespace CateringManagement.Api.Controllers
     {
         private readonly IDailyHotelAssignmentService _service;
 
-        public DailyHotelAssignmentController(
-            IDailyHotelAssignmentService service)
+        public DailyHotelAssignmentController( IDailyHotelAssignmentService service)
         {
             _service = service;
         }
@@ -35,7 +34,7 @@ namespace CateringManagement.Api.Controllers
             return Ok(result);
         }
 
-
+        
         // GET: api/DailyHotelAssignment/employee/1/date/2026-09-19
         [HttpGet("employee/{employeeId}/date/{date}")]
         public async Task<IActionResult> GetByEmployeeAndDate( long employeeId,   DateTime date)

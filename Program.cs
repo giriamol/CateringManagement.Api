@@ -87,10 +87,25 @@ builder.Services.AddScoped<
     IEmployeePaymentService,
     EmployeePaymentService>();
 
+// Vendor payment repository & service
+builder.Services.AddScoped<
+    IVendorPaymentRepository,
+    VendorPaymentRepository>();
+builder.Services.AddScoped<
+    IVendorPaymentService,
+    VendorPaymentService>();
+
 // Repository — add this registration
 builder.Services.AddScoped<
     IRateMastersRepository,
     RateMastersRepository>();
+builder.Services.AddScoped<
+    IVendorAdvanceRepository,
+    VendorAdvanceRepository>();
+
+builder.Services.AddScoped<
+    IVendorAdvanceService,
+    VendorAdvanceService>();
 
 builder.Services.AddOpenApi();
 builder.Services.AddCors(options =>

@@ -42,8 +42,7 @@ namespace CateringManagement.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(
-            [FromBody] CreateVendorDto dto)
+        public async Task<IActionResult> Create([FromBody] CreateVendorDto dto)
         {
             try
             {
@@ -105,5 +104,15 @@ namespace CateringManagement.Api.Controllers
                 message = "Vendor deleted successfully."
             });
         }
+        // GET: api/Vendors/without-rate-history
+        [HttpGet("without-rate-history")]
+        public async Task<IActionResult> GetVendorsWithoutRateHistory()
+        {
+            var vendors =
+                await _vendorService.GetVendorsWithoutRateHistoryAsync();
+
+            return Ok(vendors);
+        }
+
     }
 }
