@@ -15,6 +15,61 @@ namespace CateringManagement.Api.Controllers
         {
             _service = service;
         }
+        [HttpGet("summaryReport")]
+        public async Task<IActionResult> GetPaymentReportSummary([FromQuery] long hotelId, [FromQuery] DateTime fromDate, [FromQuery] DateTime toDate, [FromQuery] string? status = null)
+        {
+            if (hotelId <= 0)
+            {
+                return BadRequest(new { message = "A valid HotelId is required." });
+            }
+
+            if (fromDate.Date > toDate.Date)
+            {
+                return BadRequest(new { message = "FromDate cannot be greater than ToDate." });
+            }
+
+            try
+            {
+                var result = await _service.GetPaymentReportSummary(hotelId, fromDate, toDate, status);
+
+                if (result == null || !result.Any())
+                {
+                    return NotFound(new { message = "Caterer payment summary not found." });
+                }
+
+                return Ok(result);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpGet("AllReport")]
+        public async Task<IActionResult> GetAllReportPaymentSummary([FromQuery] DateTime fromDate, [FromQuery] DateTime toDate, [FromQuery] string? status = null)
+        {
+            if (fromDate.Date > toDate.Date)
+            {
+                return BadRequest(new { message = "FromDate cannot be greater than ToDate." });
+            }
+
+            try
+            {
+                var result = await _service.GetAllReportPaymentSummary(fromDate, toDate, status);
+
+                if (result == null || !result.Any())
+                {
+                    return NotFound(new { message = "Caterer payment summary not found." });
+                }
+
+                return Ok(result);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
 
         // GET: api/HotelAssignmentData?date=2026-10-20
         [HttpGet]
@@ -107,65 +162,7 @@ namespace CateringManagement.Api.Controllers
             }
         }
 
-        [HttpGet("summaryReport")]
-        public async Task<IActionResult> GetPaymentReportSummary(
-    [FromQuery] long hotelId,
-    [FromQuery] DateTime fromDate,
-    [FromQuery] DateTime toDate,
-    [FromQuery] string? status = null)
-        {
-            if (hotelId <= 0)
-            {
-                return BadRequest(new { message = "A valid HotelId is required." });
-            }
-
-            if (fromDate.Date > toDate.Date)
-            {
-                return BadRequest(new { message = "FromDate cannot be greater than ToDate." });
-            }
-
-            try
-            {
-                var result = await _service.GetPaymentReportSummary( hotelId, fromDate, toDate, status);
-
-                if (result == null || !result.Any())
-                {
-                    return NotFound(new { message = "Caterer payment summary not found." });
-                }
-
-                return Ok(result);
-            }
-            catch (ArgumentException ex)
-            {
-                return BadRequest(new { message = ex.Message });
-            }
-        }
-
-        [HttpGet("AllReport")]
-        public async Task<IActionResult> GetAllReportPaymentSummary( [FromQuery] DateTime fromDate, [FromQuery] DateTime toDate,  [FromQuery] string? status = null)
-        {
-            if (fromDate.Date > toDate.Date)
-            {
-                return BadRequest(new { message = "FromDate cannot be greater than ToDate." });
-            }
-
-            try
-            {
-                var result = await _service.GetAllReportPaymentSummary(fromDate, toDate, status);
-
-                if (result == null || !result.Any())
-                {
-                    return NotFound(new { message = "Caterer payment summary not found." });
-                }
-
-                return Ok(result);
-            }
-            catch (ArgumentException ex)
-            {
-                return BadRequest(new { message = ex.Message });
-            }
-        }
-
+       
 
     }
 }
