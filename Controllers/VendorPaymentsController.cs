@@ -46,6 +46,36 @@ namespace CateringManagement.Api.Controllers
             }
         }
 
+        [HttpGet("VendorReport")]
+        public async Task<IActionResult> GetVendorReport([FromQuery] long vendorId, [FromQuery] DateTime fromDate, [FromQuery] DateTime toDate)
+        {
+            if (vendorId <= 0)
+            {
+                return BadRequest(new { message = "A valid VendorId is required." });
+            }
+
+            if (fromDate.Date > toDate.Date)
+            {
+                return BadRequest(new { message = "FromDate cannot be greater than ToDate." });
+            }
+
+            try
+            {
+                var result = await _service.GetVendoreportAsync(vendorId, fromDate, toDate);
+
+                if (result == null)
+                {
+                    return NotFound(new { message = "Vendor payment summary not found." });
+                }
+
+                return Ok(result);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
         [HttpGet("All")]
         public async Task<IActionResult> GetAllPaymentSummary([FromQuery] DateTime fromDate, [FromQuery] DateTime toDate)
         {
@@ -87,6 +117,78 @@ namespace CateringManagement.Api.Controllers
             catch (InvalidOperationException ex)
             {
                 return Conflict(new { message = ex.Message });
+            }
+        }
+
+        [HttpGet("GetReport")]
+        public async Task<IActionResult> GetReportPaymentSummary([FromQuery] long vendorId, [FromQuery] DateTime fromDate, [FromQuery] DateTime toDate, string status)
+        {
+            if (vendorId <= 0)
+            {
+                return BadRequest(new
+                {
+                    message = "A valid VendorId is required."
+                });
+            }
+
+            if (fromDate.Date > toDate.Date)
+            {
+                return BadRequest(new
+                {
+                    message = "FromDate cannot be greater than ToDate."
+                });
+            }
+
+            try
+            {
+                var result = await _service.GetReportPaymentSummaryAsync(vendorId, fromDate, toDate, status);
+
+                if (result == null)
+                {
+                    return NotFound(new
+                    {
+                        message = "Employee payment summary not found."
+                    });
+                }
+
+                return Ok(result);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpGet("GetAllReport")]
+        public async Task<IActionResult> GetReportAllPaymentSummary([FromQuery] DateTime fromDate, [FromQuery] DateTime toDate, string status)
+        {
+
+            if (fromDate.Date > toDate.Date)
+            {
+                return BadRequest(new
+                {
+                    message = "FromDate cannot be greater than ToDate."
+                });
+            }
+
+            try
+            {
+                var result = await _service.GetReportAllPaymentSummaryAsync(fromDate, toDate, status);
+
+                if (result == null)
+                {
+                    return NotFound(new
+                    {
+                        message = "Vendor payment summary not found."
+                    });
+                }
+
+                return Ok(result);
+
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
             }
         }
     }

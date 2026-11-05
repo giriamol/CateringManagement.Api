@@ -37,13 +37,33 @@ namespace CateringManagement.Api.Controllers
         
         // GET: api/DailyHotelAssignment/employee/1/date/2026-09-19
         [HttpGet("employee/{employeeId}/date/{date}")]
-        public async Task<IActionResult> GetByEmployeeAndDate( long employeeId,   DateTime date)
+        public async Task<IActionResult> GetByEmployeeAndDate( long employeeId,DateTime date)
         {
             var result = await _service.GetByEmployeeAndDateAsync(employeeId, date);
 
             return Ok(result);
         }
 
+        [HttpGet ("employee-report/{employeeId}")]
+        public async Task<IActionResult> GetEmployeeDate(long employeeId, [FromQuery] DateTime fromDate,[FromQuery] DateTime toDate)
+        {
+            if (employeeId <= 0)
+                return BadRequest("Invalid employee ID.");
+
+            if (fromDate == default || toDate == default)
+                return BadRequest("From date and To date are required.");
+
+            if (fromDate.Date > toDate.Date)
+                return BadRequest("From date cannot be greater than To date.");
+
+            var result = await _service.GetEmployeeWorkRport(
+                employeeId,
+                fromDate,
+                toDate
+            );
+
+            return Ok(result);
+        }
         // POST: api/DailyHotelAssignment
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateDailyHotelAssignmentDto dto)

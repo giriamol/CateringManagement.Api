@@ -113,5 +113,79 @@ namespace CateringManagement.Api.Controllers
                 return Conflict(new { message = ex.Message });
             }
         }
+
+        [HttpGet("GetReport")]
+        public async Task<IActionResult> GetReportPaymentSummary([FromQuery] long employeeId, [FromQuery] DateTime fromDate, [FromQuery] DateTime toDate,string status)
+        {
+            if (employeeId <= 0)
+            {
+                return BadRequest(new
+                {
+                    message = "A valid EmployeeId is required."
+                });
+            }
+
+            if (fromDate.Date > toDate.Date)
+            {
+                return BadRequest(new
+                {
+                    message = "FromDate cannot be greater than ToDate."
+                });
+            }
+
+            try
+            {
+                var result = await _service.GetReportPaymentSummaryAsync(employeeId, fromDate, toDate, status);
+
+                if (result == null)
+                {
+                    return NotFound(new
+                    {
+                        message = "Employee payment summary not found."
+                    });
+                }
+
+                return Ok(result);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpGet("GetAllReport")]
+        public async Task<IActionResult> GetReportAllPaymentSummary([FromQuery] DateTime fromDate, [FromQuery] DateTime toDate,string status)
+        {
+
+            if (fromDate.Date > toDate.Date)
+            {
+                return BadRequest(new
+                {
+                    message = "FromDate cannot be greater than ToDate."
+                });
+            }
+
+            try
+            {
+                var result = await _service.GetReportAllPaymentSummaryAsync(fromDate, toDate, status);
+
+                if (result == null)
+                {
+                    return NotFound(new
+                    {
+                        message = "Employee payment summary not found."
+                    });
+                }
+
+                return Ok(result);
+
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+
     }
 }

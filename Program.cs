@@ -106,6 +106,20 @@ builder.Services.AddScoped<
 builder.Services.AddScoped<
     IVendorAdvanceService,
     VendorAdvanceService>();
+builder.Services.AddScoped<
+    IHotelAssignmentDataRepository,
+    HotelAssignmentDataRepository>();
+
+builder.Services.AddScoped<
+    IHotelAssignmentDataService,
+    HotelAssignmentDataService>();
+builder.Services.AddScoped<
+    IDailySupplierAssignmentToVendorRepository,
+    DailySupplierAssignmentToVendorRepository>();
+
+builder.Services.AddScoped<
+    IDailySupplierAssignmentToVendorService,
+    DailySupplierAssignmentToVendorService>();
 
 builder.Services.AddOpenApi();
 builder.Services.AddCors(options =>
