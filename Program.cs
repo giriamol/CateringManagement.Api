@@ -1,8 +1,14 @@
 using CateringManagement.Application.Interfaces;
 using CateringManagement.Application.Services;
+using CateringManagement.Domain.Entities;
 using CateringManagement.Infrastructure.Data;
 using CateringManagement.Infrastructure.Repositories;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -121,6 +127,16 @@ builder.Services.AddScoped<
     IDailySupplierAssignmentToVendorService,
     DailySupplierAssignmentToVendorService>();
 
+// Authentication Repository
+builder.Services.AddScoped<IAuthRepository, AuthRepository>();
+
+// Authentication Service
+builder.Services.AddScoped<IAuthService, AuthService>();
+
+// Password Hasher
+builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
+
+
 builder.Services.AddOpenApi();
 builder.Services.AddCors(options =>
 {
@@ -133,19 +149,136 @@ builder.Services.AddCors(options =>
     });
 });
 
+var jwtSettings = builder.Configuration.GetSection("Jwt");
+
+var jwtKey = jwtSettings["Key"]
+    ?? throw new InvalidOperationException("JWT Key is missing.");
+
+builder.Services
+    .AddAuthentication(options =>
+    {
+        options.DefaultAuthenticateScheme =
+            JwtBearerDefaults.AuthenticationScheme;
+
+        options.DefaultChallengeScheme =
+            JwtBearerDefaults.AuthenticationScheme;
+    })
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+
+            ValidIssuer = jwtSettings["Issuer"],
+            ValidAudience = jwtSettings["Audience"],
+
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(jwtKey)),
+
+            RoleClaimType = ClaimTypes.Role,
+            NameClaimType = ClaimTypes.Name,
+            ClockSkew = TimeSpan.Zero
+        };
+    });
+// Permission-based authorization
+builder.Services.AddAuthorization(options =>
+{
+    string[] permissions =
+    {
+        "Dashboard.View",
+
+        "Employee.View",
+        "Employee.Create",
+        "Employee.Edit",
+        "Employee.Delete",
+
+        "Vendor.View",
+        "Vendor.Create",
+        "Vendor.Edit",
+
+        "Hotel.View",
+        "Hotel.Create",
+        "Hotel.Edit",
+
+        "Assignment.View",
+        "Assignment.Create",
+        "Assignment.Edit",
+        "Assignment.Delete",
+
+        "Payment.View",
+        "Payment.Create",
+        "Payment.Edit",
+
+        "Reports.View",
+        "Reports.Export",
+
+        "Role.View",
+        "Role.Manage",
+
+        "User.View",
+        "User.Create",
+        "User.Edit",
+        "User.Delete"
+    };
+
+    foreach (var permission in permissions)
+    {
+        options.AddPolicy(permission, policy =>
+        {
+            policy.RequireClaim("permission", permission);
+        });
+    }
+});
 var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+//------------------------------------------------------------------------------------------------
 
+
+//// TEMPORARY PASSWORD HASH GENERATION
+//using (var scope = app.Services.CreateScope())
+//{
+//    var hasher = scope.ServiceProvider
+//        .GetRequiredService<IPasswordHasher<User>>();
+
+//    var user = new User
+//    {
+//        UserId = 1,
+//        FullName = "Amol",
+//        Email = "giriamolp@gmail.com"
+//    };
+
+//    var hash = hasher.HashPassword(user, "Amol@1234");
+
+//    Console.WriteLine("NEW PASSWORD HASH:");
+//    Console.WriteLine(hash);
+//}
+
+// Existing middleware below
+app.UseCors("ReactPolicy");
+app.UseHttpsRedirection();
+app.UseAuthentication();
+app.UseAuthorization();
+app.MapControllers();
+
+app.Run();
+
+
+
+//------------------------------------------------------------------------------------------------
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
+
 app.UseCors("ReactPolicy");
 
 app.UseHttpsRedirection();
