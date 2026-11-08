@@ -25,20 +25,20 @@ namespace CateringManagement.Api.Controllers
             return Ok(result);
         }
 
-        // GET: api/DailySupplierAssignmentToVendor/5
-        //[HttpGet("{id:long}")]
-        //public async Task<IActionResult> GetById(long id)
-        //{
-        //    var result = await _service.GetByIdAsync(id);
+        // GET: api/DailySupplierAssignmentToVendor/2026-11-05
+        [HttpGet("{date}")]
+        public async Task<IActionResult> GetByRangeDate(DateTime date)
+        {
+            var result = await _service.GetByDateRangeAsync(date);
 
-        //    if (result == null)
-        //        return NotFound(new
-        //        {
-        //            message = "Assignment not found."
-        //        });
+            if (result == null)
+                return NotFound(new
+                {
+                    message = "Assignment not found."
+                });
 
-        //    return Ok(result);
-        //}
+            return Ok(result);
+        }
 
         // GET: api/DailySupplierAssignmentToVendor/date/2026-11-02
         [HttpGet("getbydate")]
