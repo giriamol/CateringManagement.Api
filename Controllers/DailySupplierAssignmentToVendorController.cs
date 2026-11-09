@@ -70,9 +70,39 @@ namespace CateringManagement.Api.Controllers
                     return BadRequest(new { message = ex.Message });
                 }
             }
+        // GET: api/DailySupplierAssignmentToVendor/date/2026-11-02
+        [HttpGet("GetReportDate")]
+        public async Task<IActionResult> GetReportDate([FromQuery] long vendorId, [FromQuery] DateTime fromDate, [FromQuery] DateTime toDate,string status)
+        {
 
-            [HttpGet("All")]
-            public async Task<IActionResult> GetAllSupplierSummary([FromQuery] DateTime fromDate, [FromQuery] DateTime toDate)
+            if (vendorId <= 0)
+            {
+                return BadRequest(new { message = "A valid VendorId is required." });
+            }
+
+            if (fromDate.Date > toDate.Date)
+            {
+                return BadRequest(new { message = "FromDate cannot be greater than ToDate." });
+            }
+            try
+            {
+                var result = await _service.GetReportDateAsync(vendorId, fromDate, toDate,status);
+
+                if (result == null)
+                {
+                    return NotFound(new { message = "Vendor payment summary not found." });
+                }
+
+                return Ok(result);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpGet("All")]
+            public async Task<IActionResult> GetAllSupplierSummary([FromQuery] DateTime fromDate, [FromQuery] DateTime toDate,string status)
             {
                 if (fromDate.Date > toDate.Date)
                 {
@@ -81,7 +111,7 @@ namespace CateringManagement.Api.Controllers
 
                 try
                 {
-                    var result = await _service.GetAllSupplierSummaryAsync(fromDate, toDate);
+                    var result = await _service.GetAllSupplierSummaryAsync(fromDate, toDate,status);
 
                     if (result == null)
                     {
@@ -110,6 +140,25 @@ namespace CateringManagement.Api.Controllers
                 return CreatedAtAction(
                     nameof(Add),
                     new { id = result.SupplierAssignmentId },
+                    result);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        // POST: api/DailySupplierAssignmentToVendor/SavePayment
+        [HttpPost("SavePayment")]
+        public async Task<IActionResult> SavePayment([FromBody] SaveSupplierPaymentDto dto)
+        {
+            try
+            {
+                var result = await _service.SavePaymentAsync(dto);
+
+                return CreatedAtAction(
+                    nameof(Add),
+                    new { id = result.SupplierPaymentId },
                     result);
             }
             catch (ArgumentException ex)
