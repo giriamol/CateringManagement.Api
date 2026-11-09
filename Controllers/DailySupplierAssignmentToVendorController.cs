@@ -209,5 +209,38 @@ namespace CateringManagement.Api.Controllers
                 message = "Assignment deleted successfully."
             });
         }
+
+        // GET: api/DailySupplierAssignmentToVendor/date/2026-11-02
+        [HttpGet("GetReportHistory")]
+        public async Task<IActionResult> GetReportHistory([FromQuery] long vendorId, [FromQuery] DateTime fromDate, [FromQuery] DateTime toDate)
+        {
+
+            if (vendorId <= 0)
+            {
+                return BadRequest(new { message = "A valid VendorId is required." });
+            }
+
+            if (fromDate.Date > toDate.Date)
+            {
+                return BadRequest(new { message = "FromDate cannot be greater than ToDate." });
+            }
+            try
+            {
+                var result = await _service.GetReportHistoryAsync(vendorId, fromDate, toDate);
+
+                if (result == null)
+                {
+                    return NotFound(new { message = "Vendor payment summary not found." });
+                }
+
+                return Ok(result);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+
     }
 }
