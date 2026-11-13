@@ -17,8 +17,15 @@ namespace CateringManagement.Api.Controllers
             _service = service;
         }
 
+        [HttpGet("getAll")]
+        public async Task<IActionResult> GetAllEmployeeData ()
+        {
+            var result = await _service.GetAllEmployeeDataAsync();
+            return Ok(result);
+        }
+
         // GET: api/DailyHotelAssignment/date/2026-09-19
-        
+
         [HttpGet("date/{date}")]
         public async Task<IActionResult> GetByDate(DateTime date)
         {

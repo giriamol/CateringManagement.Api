@@ -26,7 +26,7 @@ namespace CateringManagement.Api.Controllers
             return Ok(result);
         }
         [HttpGet]
-        public async Task<IActionResult> GetAll([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
+        public async Task<IActionResult> GetAll([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 20)
         {
             if (pageNumber < 1)
             {
