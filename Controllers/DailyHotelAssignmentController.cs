@@ -24,8 +24,13 @@ namespace CateringManagement.Api.Controllers
             return Ok(result);
         }
 
-        // GET: api/DailyHotelAssignment/date/2026-09-19
+        [HttpGet("getAllVendors")]        public async Task<IActionResult> GetAllVendorData()
 
+        {
+            var result = await _service.GetAllVendorDataAsync();
+            return Ok(result);
+        }
+        // GET: api/DailyHotelAssignment/date/2026-09-19
         [HttpGet("date/{date}")]
         public async Task<IActionResult> GetByDate(DateTime date)
         {
@@ -135,6 +140,9 @@ namespace CateringManagement.Api.Controllers
                     message = ex.Message
                 });
             }
+
+            
+
         }
     }
 }
