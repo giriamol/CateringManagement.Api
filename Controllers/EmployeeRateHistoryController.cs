@@ -25,8 +25,8 @@ namespace CateringManagement.Api.Controllers
 
             return Ok(result);
         }
-        [HttpGet]
-        public async Task<IActionResult> GetAll([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 20)
+        [HttpGet("page")]
+        public async Task<IActionResult> GetAllpage([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 20)
         {
             if (pageNumber < 1)
             {
@@ -44,7 +44,7 @@ namespace CateringManagement.Api.Controllers
                 });
             }
 
-            var result = await _service.GetAllPagedAsync(
+            var result = await _service.GetAllPagedpageAsync(
                 pageNumber,
                 pageSize
             );

@@ -232,12 +232,12 @@ builder.Services.AddAuthorization(options =>
         });
     }
 });
-var app = builder.Build();
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+//var app = builder.Build();
+//if (app.Environment.IsDevelopment())
+//{
+//    app.UseSwagger();
+//    app.UseSwaggerUI();
+//}
 //------------------------------------------------------------------------------------------------
 
 
@@ -261,31 +261,76 @@ if (app.Environment.IsDevelopment())
 //}
 
 // Existing middleware below
-app.UseCors("ReactPolicy");
-app.UseHttpsRedirection();
-app.UseAuthentication();
-app.UseAuthorization();
-app.MapControllers();
+//app.UseCors("ReactPolicy");
+//app.UseHttpsRedirection();
+//app.UseAuthentication();
+//app.UseAuthorization();
+//app.MapControllers();
 
-app.Run();
+//app.Run();
 
 
 
 //------------------------------------------------------------------------------------------------
 
 // Configure the HTTP request pipeline.
+//if (app.Environment.IsDevelopment())
+//{
+//    app.MapOpenApi();
+//}
+
+//app.UseCors("ReactPolicy");
+
+//app.UseHttpsRedirection();
+
+//// JWT Authentication
+//app.UseAuthentication();
+
+//// Authorization
+//app.UseAuthorization();
+
+//// Backend API endpoints
+//app.MapControllers();
+
+//// React routing fallback
+//app.MapFallbackToFile("index.html");
+
+//app.Run();
+var app = builder.Build();
+
+// Swagger configuration
 if (app.Environment.IsDevelopment())
 {
+    app.UseSwagger();
+    app.UseSwaggerUI();
     app.MapOpenApi();
 }
 
+// Serve React frontend files from wwwroot
+app.UseDefaultFiles();
+app.UseStaticFiles();
+
+// CORS
 app.UseCors("ReactPolicy");
 
-app.UseHttpsRedirection();
+// HTTPS redirection
+//app.UseHttpsRedirection();
+// HTTPS redirection
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+}
 
+// JWT Authentication
+app.UseAuthentication();
+
+// Authorization
 app.UseAuthorization();
 
-
+// Backend API endpoints
 app.MapControllers();
+
+// React routing fallback
+app.MapFallbackToFile("index.html");
 
 app.Run();
