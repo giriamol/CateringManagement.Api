@@ -12,19 +12,20 @@ namespace CateringManagement.Api.Controllers
     {
         private readonly IDailyHotelAssignmentService _service;
 
-        public DailyHotelAssignmentController( IDailyHotelAssignmentService service)
+        public DailyHotelAssignmentController(IDailyHotelAssignmentService service)
         {
             _service = service;
         }
 
         [HttpGet("getAll")]
-        public async Task<IActionResult> GetAllEmployeeData ()
+        public async Task<IActionResult> GetAllEmployeeData()
         {
             var result = await _service.GetAllEmployeeDataAsync();
             return Ok(result);
         }
 
-        [HttpGet("getAllVendors")]        public async Task<IActionResult> GetAllVendorData()
+        [HttpGet("getAllVendors")]
+        public async Task<IActionResult> GetAllVendorData()
 
         {
             var result = await _service.GetAllVendorDataAsync();
@@ -46,18 +47,18 @@ namespace CateringManagement.Api.Controllers
             return Ok(result);
         }
 
-        
+
         // GET: api/DailyHotelAssignment/employee/1/date/2026-09-19
         [HttpGet("employee/{employeeId}/date/{date}")]
-        public async Task<IActionResult> GetByEmployeeAndDate( long employeeId,DateTime date)
+        public async Task<IActionResult> GetByEmployeeAndDate(long employeeId, DateTime date)
         {
             var result = await _service.GetByEmployeeAndDateAsync(employeeId, date);
 
             return Ok(result);
         }
 
-        [HttpGet ("employee-report/{employeeId}")]
-        public async Task<IActionResult> GetEmployeeDate(long employeeId, [FromQuery] DateTime fromDate,[FromQuery] DateTime toDate)
+        [HttpGet("employee-report/{employeeId}")]
+        public async Task<IActionResult> GetEmployeeDate(long employeeId, [FromQuery] DateTime fromDate, [FromQuery] DateTime toDate)
         {
             if (employeeId <= 0)
                 return BadRequest("Invalid employee ID.");
@@ -141,7 +142,7 @@ namespace CateringManagement.Api.Controllers
                 });
             }
 
-            
+
 
         }
     }
