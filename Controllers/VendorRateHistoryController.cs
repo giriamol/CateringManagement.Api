@@ -33,8 +33,7 @@ namespace CateringManagement.Api.Controllers
         [HttpGet("vendor/{VendorRateHistoryId}")]
         public async Task<IActionResult> GetByVendor( long VendorRateHistoryId)
         {
-            var result =
-                await _service.GetByVendorIdAsync(VendorRateHistoryId);
+            var result =  await _service.GetByVendorIdAsync(VendorRateHistoryId);
 
             return Ok(result);
         }
@@ -111,8 +110,7 @@ namespace CateringManagement.Api.Controllers
         }
 
         [HttpDelete("{vendorRateHistoryId:long}")]
-        public async Task<IActionResult> Delete(
-            long vendorRateHistoryId)
+        public async Task<IActionResult> Delete(long vendorRateHistoryId)
         {
             try
             {
